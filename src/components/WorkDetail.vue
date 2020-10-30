@@ -101,7 +101,7 @@
     </div>
 </template>
 <script>
-  import axios from 'axios';
+  // import axios from 'axios';
   export default {
     name: "WorkDetail",
     data() {
@@ -124,7 +124,7 @@
     methods:{
       submitForm(){
         this.dialogFormVisible = false;
-        axios.post('http://localhost:8081/jobs', this.jobsInformation)
+        this.$axios.post('', this.jobsInformation)
           .then(() => {
             this.$message({
               message: '添加成功啦，恭喜你，离offer又近了一步！',
@@ -135,7 +135,7 @@
 
       },
       listForm(){
-        axios.get('http://localhost:8081/jobs')
+       this.$axios.get()
           .then(response => { this.tableData = response.data
             this.tableData.forEach((item)=>{
               item.createTime = `${new Date(item.createTime).getFullYear()}年${new Date(item.createTime).getMonth() + 1}月${new Date(item.createTime).getDate()}日`
@@ -150,7 +150,7 @@
           cancelButtonText: '算了吧',
           type: 'warning'
         }).then(() => {
-          axios.delete('http://localhost:8081/jobs'+'/'+ row.id ).then(()=>{
+          this.$axios.delete('/'+ row.id ).then(()=>{
             this.$message({
               message: '删除成功啦～',
               type: 'success'
@@ -180,13 +180,13 @@
       },
       edit(row){
         //请求单个公司的数据
-        axios.get('http://localhost:8081/jobs/'+row.id).then(res=>{
+        this.$axios.get('/'+row.id).then(res=>{
           console.log(res.data)
           this.jobsInformation = res.data
         })
         this.dialogFormVisible = true
       },findName(){
-        axios.get('http://localhost:8081/jobs/find?name=' + this.input)  .then(response => { this.tableData = response.data
+        this.$axios.get('/find?name=' + this.input)  .then(response => { this.tableData = response.data
           this.tableData.forEach((item)=>{
             item.createTime = `${new Date(item.createTime).getFullYear()}年${new Date(item.createTime).getMonth() + 1}月${new Date(item.createTime).getDate()}日`
           })
