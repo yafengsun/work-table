@@ -97,7 +97,15 @@
             </template>
         </el-table-column>
     </el-table>
-
+ <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pageNum"
+      :page-sizes="[10, 20, 30, 50]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
     </div>
 </template>
 <script>
@@ -118,7 +126,10 @@
         },
         dialogFormVisible: false,
         formLabelWidth: '120px',
-        input:''
+        input:'',
+        pageNum:1,
+        pageSize:10,
+        total:0
       }
     },
     methods:{
@@ -134,9 +145,11 @@
           });
 
       },
+      //请求页面列表数据
       listForm(){
-       this.$axios.get()
-          .then(response => { this.tableData = response.data
+       this.$axios.get(`?pageNum=${this.pageNum}&pageSize=${this.pageSize}`)
+          .then(response => { this.tableData = response.data.jobsInformations
+          this.total = response.data.total;
             this.tableData.forEach((item)=>{
               item.createTime = `${new Date(item.createTime).getFullYear()}年${new Date(item.createTime).getMonth() + 1}月${new Date(item.createTime).getDate()}日`
             })
@@ -185,12 +198,24 @@
           this.jobsInformation = res.data
         })
         this.dialogFormVisible = true
-      },findName(){
+      },
+      findName(){
         this.$axios.get('/find?name=' + this.input)  .then(response => { this.tableData = response.data
           this.tableData.forEach((item)=>{
             item.createTime = `${new Date(item.createTime).getFullYear()}年${new Date(item.createTime).getMonth() + 1}月${new Date(item.createTime).getDate()}日`
           })
         });
+      },
+      //每页条数pageSize改变时触发
+      handleSizeChange(val){
+        this.pageSize = val;
+        this.listForm()
+      },
+      //当前页改变pageNum
+      handleCurrentChange(val) {
+        // console.log(`当前页: ${val}`);
+        this.pageNum = val;
+        this.listForm()
       }
     },
     mounted(){
