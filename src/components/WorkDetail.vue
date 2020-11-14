@@ -200,7 +200,9 @@
         this.dialogFormVisible = true
       },
       findName(){
-        this.$axios.get('/find?name=' + this.input)  .then(response => { this.tableData = response.data
+        this.pageNum = 1;
+        this.pageSize = 10;
+        this.$axios.get('/find?name=' + this.input+`&pageNum=${this.pageNum}&pageSize=${this.pageSize}`)  .then(response => { this.tableData = response.data.jobsInformations
           this.tableData.forEach((item)=>{
             item.createTime = `${new Date(item.createTime).getFullYear()}年${new Date(item.createTime).getMonth() + 1}月${new Date(item.createTime).getDate()}日`
           })
